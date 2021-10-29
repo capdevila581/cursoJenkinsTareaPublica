@@ -48,7 +48,8 @@ node {
             sh "echo '${CONTENIDO}' > ${FICHERO}"
         }
         stage ("Guardar fichero") {
-            sh "sleep ${DEMORA}"
+            archiveArtifacts(artifacts: '${FICHERO}', followSymlinks: false)
+            echo 'Fichero guardado'
         }
         
     }finally{
