@@ -1,5 +1,4 @@
 // Plantilla de PIPELINE.
-// Autor: IvanciniGT
 
 // Al cambiar la verisón sólo se recarga la configuración del proyecto... pero no se ejecutarán las tareas
 VERSION_DEL_PIPELINE="0"
@@ -32,6 +31,7 @@ node {
         // checkout scm     // En este caso se hace un checkout del mismo repo donde está el JENKINSFILE
         // checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'MiCredencialGitHub', url: 'https://github.com/IvanciniGT/cursoJenkinsWebapp.git']]])
     try{
+        //El Job con el nombre 'Tarea' esta configurado en jenkins . La 'Tarea' hace referencia a la configuracion que esta en Jenkinsfile 
         stage ("Llamar a tarea 1") {
             build(
                 wait: false, 
@@ -60,7 +60,7 @@ node {
             parallel(
                 "Tarea 3": {
                     build(
-                        wait: false, 
+                        wait: true, 
                         job: 'Tarea', 
                         parameters: [
                             booleanParam(name: 'GENERAR_ERROR', value: false), 
@@ -73,7 +73,7 @@ node {
                 "Tarea 4": {
                     try{
                         build(
-                            wait: false, 
+                            wait: true, 
                             job: 'Tarea', 
                             parameters: [
                                 booleanParam(name: 'GENERAR_ERROR', value: false), 

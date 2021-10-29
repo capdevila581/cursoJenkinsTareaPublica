@@ -29,7 +29,43 @@ node {
     
     //Aqui empiezan las tareas propias de mi pipeline
     try{  
-
+        stage("Información Build"){
+            print currentBuild.result
+            print currentBuild.number
+            print currentBuild.displayName
+            print currentBuild.buildCauses
+            print currentBuild.projectName
+            print currentBuild.previousBuild
+            
+            if(currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause)!=null){
+                echo "Esto solo se ejecuta si la causa es un lanzamiento manual"
+            }
+            if(currentBuild.rawBuild.getCause(hudson.triggers.TimerTrigger$TimerTriggerCause)!=null){
+                echo "Esto solo se ejecuta si la causa es un lanzamiento basado en cron"
+            }
+            if(currentBuild.rawBuild.getCause(hudson.triggers.SCMTrigger$SCMTriggerCause)!=null){
+                echo "Esto solo se ejecuta si la causa es un lanzamiento debido a cambio en el repo"
+            }
+            
+            
+            // Pongais codigo que nos permite recuperar la informacion del último build que se ejecuto correctamente
+            def buildAnterior=currentBuild.previousBuild
+            while(buildAnterior != null){
+                if(buildAnterior.result=="SUCCESS"){
+                    print buildAnterior.number
+                    copyArtifacts(
+                        filter: "$FICHERO", 
+                        fingerprintArtifacts: true, 
+                        projectName: currentBuild.projectName, 
+                        selector: specific( "${buildAnterior.number}" )
+                    )
+                    break
+                }
+                buildAnterior=buildAnterior.previousBuild
+            }
+            
+            
+        }
         stage ("Hacer cosas") {
             sh "sleep ${DEMORA}"
         }
