@@ -53,17 +53,7 @@ node {
         }
         
     }finally{
-        stage ("Limpieza del workspace") {
-            docker.image('maven:3.8.3-openjdk-8').inside {
-                sh 'mvn clean'
-            }    
-            try{
-                sh "docker rm ${env.ID_CONTENEDOR} -f"
-            }
-            catch(exc){
-                echo 'Parece que no hemos podido borrar el contenedor'
-            }
-        }
+
     }
     
 
